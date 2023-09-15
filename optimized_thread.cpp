@@ -1,11 +1,12 @@
+//optimized_thread.cpp
 #include "optimized_thread.h"
 #include <iostream>
 
-OptimizedThreadPool::OptimizedThreadPool():
-	m_thread_count(thread::hardware_concurrency() != 0? thread::hardware_concurrency():4),
-	m_thread_queues(m_thread_count)
+OptimizedThreadPool::OptimizedThreadPool() :
+	m_thread_count(thread::hardware_concurrency() != 0 ? thread::hardware_concurrency() : 4),
+	m_thread_queues(m_thread_count),
+	m_qindex(0)
 {
-
 }
 
 void OptimizedThreadPool::start() {
@@ -30,7 +31,7 @@ void OptimizedThreadPool::push_task(FuncType f, int arg1, int arg2) {
 void OptimizedThreadPool::threadFunc(int qindex) {
 	while (true) {
 		task_type task_to_do;
-		bool res;
+		bool res = false;
 		long long i = 0;
 
 		for (; i < m_thread_count; i++) {
